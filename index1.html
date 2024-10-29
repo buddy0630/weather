@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            padding: 20px;
+            text-align: center;
+        }
+        #weather {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            margin-top: 20px;
+        }
+        input {
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: #fff;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Weather App</h1>
+    <input type="text" id="cityInput" placeholder="Enter city name" value="Ulaanbaatar">
+    <button id="getWeatherBtn">Get Weather</button>
+
+    <div id="weather">
+        <p id="description">Weather: --</p>
+        <p id="temperature">Temperature: -- °C</p>
+        <p id="humidity">Humidity: -- %</p>
+    </div>
+
+    <script>
+        const apiKey = 'd204a5bf9c189e5db82a31d6f49cafb1'; 
+
+        document.getElementById('getWeatherBtn').addEventListener('click', () => {
+            const city = document.getElementById('cityInput').value;
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`;
+
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('City not found');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("data: ",data);
+                    const description = data.weather[0].description;
+                    const temperature = data.main.temp;
+                    const humidity = data.main.humidity;
+
+                    document.getElementById('description').innerText = `Weather: ${description}`;
+                    document.getElementById('temperature').innerText = `Temperature: ${temperature} °C`;
+                    document.getElementById('humidity').innerText = `Humidity: ${humidity} %`;
+                })
+                .catch(error => {
+                    console.error('Error fetching the weather data:', error);
+                    document.getElementById('weather').innerText = 'Failed to load weather data. Please check the city name.';
+                });
+        });
+    </script>
+</body>
+</html>
